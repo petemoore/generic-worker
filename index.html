@@ -24,6 +24,83 @@
 
 <p>A generic worker for task cluster, written in go.</p>
 
+<h1>
+<a id="getting-started-with-generic-worker" class="anchor" href="#getting-started-with-generic-worker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started with Generic Worker</h1>
+
+<p>Although the generic worker is not yet fully implemented, or feature complete, here is some information about how you might use it when it is ready. This might also serve as a useful guide if you interested in contributing to its development.</p>
+
+<h2>
+<a id="install-go-compiler" class="anchor" href="#install-go-compiler" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install go compiler</h2>
+
+<p>Head over to <a href="http://golang.org/doc/install">http://golang.org/doc/install</a> and follow the instructions for your platform. Be sure to set your GOPATH to something appropriate.</p>
+
+<h2>
+<a id="install-generic-worker" class="anchor" href="#install-generic-worker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install generic worker</h2>
+
+<pre><code>go get github.com/petemoore/generic-worker
+</code></pre>
+
+<h2>
+<a id="create-taskcluster-account" class="anchor" href="#create-taskcluster-account" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create TaskCluster account</h2>
+
+<p>Head over to <a href="https://tools.taskcluster.net/auth/">https://tools.taskcluster.net/auth/</a> and create yourself an account with scopes <code>*</code> and a decently long expiry for running jobs. Keep a note of the ClientId and AccessToken you are given.</p>
+
+<h2>
+<a id="set-up-your-env" class="anchor" href="#set-up-your-env" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set up your env</h2>
+
+<pre><code>export PAYLOAD_SCHEMA="${GOPATH}/src/github.com/petemoore/generic-worker/schema.json"
+export PROVISIONER_ID='&lt;choose_whatever_you_like&gt;'
+export REFRESH_URLS_PREMATURELY_SECS=20
+export TASKCLUSTER_ACCESS_TOKEN='&lt;your_access_token_from_above&gt;'
+export TASKCLUSTER_CLIENT_ID='&lt;your_client_id_from_above&gt;'
+export WORKER_GROUP='&lt;anything&gt;'
+export WORKER_ID='&lt;something_to_identify_your_machine_eg_hostname&gt;'
+export WORKER_TYPE='&lt;choose_whatever_you_like&gt;'
+</code></pre>
+
+<p>You may also consider putting this in a file that is sourced when your shell starts.</p>
+
+<h2>
+<a id="start-the-generic-worker" class="anchor" href="#start-the-generic-worker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Start the generic worker</h2>
+
+<p>Simply run:</p>
+
+<pre><code>generic-worker
+</code></pre>
+
+<p>and watch logs for a successful startup. If you can see it is polling the Queue, and the process does not exit, then you can continue. If it reports a problem, follow any instructions it provides. If you are really stuck, join #taskcluster channel on irc.mozilla.org, and ask for help.</p>
+
+<p>It should look something like this:</p>
+
+<pre><code>pmoore@laptop:~ $ generic-worker
+2015/03/27 15:39:55   Delete URL: https://taskclusterqueuev1.queue.core.windows.net/queue-uxvv56u25c7cwivco6vq-uxvv56ykfoi6u-1/messages/{{messageId}}?popreceipt={{popReceipt}}&amp;st=2015-04-20T13%3A24%3A55Z&amp;se=2015-04-20T14%3A09%3A55Z&amp;sp=p&amp;sv=2014-02-14&amp;sig=hQvrbc5zPVsaHFZ9EA5JpTl0OedEt20ED3I2wnt9AAw%3D
+2015/03/27 15:39:55   Poll URL:   https://taskclusterqueuev1.queue.core.windows.net/queue-uxvv56u25c7cwivco6vq-uxvv56ykfoi6u-1/messages?visibilitytimeout=300&amp;st=2015-04-20T13%3A24%3A55Z&amp;se=2015-04-20T14%3A09%3A55Z&amp;sp=p&amp;sv=2014-02-14&amp;sig=hQvrbc5zPVsaHFZ9EA5JpTl0OedEt20ED3I2wnt9AAw%3D
+2015/03/27 15:39:56 Zero tasks returned in Azure XML QueueMessagesList
+2015/03/27 15:39:56 No task claimed from any Azure queue...
+2015/03/27 15:39:56 Zero tasks returned in Azure XML QueueMessagesList
+2015/03/27 15:39:56 No task claimed from any Azure queue...
+2015/03/27 15:39:57 Zero tasks returned in Azure XML QueueMessagesList
+2015/03/27 15:39:57 No task claimed from any Azure queue...
+2015/03/27 15:39:58 Zero tasks returned in Azure XML QueueMessagesList
+2015/03/27 15:39:58 No task claimed from any Azure queue...
+
+</code></pre>
+
+<h2>
+<a id="create-a-test-job" class="anchor" href="#create-a-test-job" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create a test job</h2>
+
+<p>Go to <a href="https://tools.taskcluster.net/task-creator/">https://tools.taskcluster.net/task-creator/</a> and create a task to run on your generic worker.</p>
+
+<p>This page provides a decent example task, but first make sure to edit <code>provisionerId</code> value should match what you set your <code>PROVISIONER_ID</code> env variable to, and the value of <code>workerType</code> should match what you set your <code>WORKER_TYPE</code> env variable to.</p>
+
+<p>Please note you should <em>NOT</em> use the default value of <code>aws-provisioner</code> for the <code>provisionerId</code> since then the production aws provisioner may start spawning ec2 instances, and the docker-worker may try to run the job. By specifying something unique for your local environment, the aws provisioner and docker workers will leave this task alone, and only your machine will claim the task.</p>
+
+<p>Don't forget to submit the task by clicking the <em>Create Task</em> icon.</p>
+
+<p>If all is well, your local generic worker should pick up the job you submit, run it, and report back status.</p>
+
+<p><em>Please note the Generic Worker is still undergoing development, and is not complete yet.</em></p>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/petemoore/generic-worker">Generic-worker</a> is maintained by <a href="https://github.com/petemoore">petemoore</a>.</span>
 
