@@ -30,11 +30,14 @@
 <p>Although the generic worker is not yet fully implemented, or feature complete, here is some information about how you might use it when it is ready. This might also serve as a useful guide if you interested in contributing to its development.</p>
 
 <h2>
-<a id="install-binary-directly" class="anchor" href="#install-binary-directly" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install binary directly</h2>
+<a id="install-binary" class="anchor" href="#install-binary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install binary</h2>
 
 <ul>
-<li>Download the latest release for your platform from <a href="https://github.com/taskcluster/generic-worker/releases">https://github.com/taskcluster/generic-worker/releases</a>.</li>
-<li>Download the latest payload schema from <a href="https://raw.githubusercontent.com/taskcluster/generic-worker/master/schema.json">https://raw.githubusercontent.com/taskcluster/generic-worker/master/schema.json</a> (this step will be gone very soon - whoops).</li>
+<li>Download the latest release for your platform from <a href="https://github.com/taskcluster/generic-worker/releases">https://github.com/taskcluster/generic-worker/releases</a>
+</li>
+<li>For darwin/linux, make the binary executable: <code>chmod a+x generic-worker*</code>
+</li>
+<li>Download the latest payload schema from <a href="https://raw.githubusercontent.com/taskcluster/generic-worker/master/schema.json">https://raw.githubusercontent.com/taskcluster/generic-worker/master/schema.json</a> (this step will be gone very soon - whoops - see <code>PAYLOAD_SCHEMA</code> environment variable described further down)</li>
 </ul>
 
 <h2>
